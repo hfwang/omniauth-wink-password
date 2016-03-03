@@ -1,10 +1,10 @@
-[![Gem Version](https://badge.fury.io/rb/omniauth-lifx.svg)](https://badge.fury.io/rb/omniauth-lifx)
+[![Gem Version](https://badge.fury.io/rb/omniauth-wink-password.svg)](https://badge.fury.io/rb/omniauth-wink-password)
 
 # omniauth-wink-password
 
 An OmniAuth strategy for Wink OAuth2 integration (using their android app client credentials!)
 
-*Note*: This strategy is pretty much 100% evil, it requests their email/password and logs in as them directly!
+*Note*: This strategy is pretty much 100% evil, it asks your users for their email/password and logs in as them directly!
 
 ## Installation
 
