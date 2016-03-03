@@ -1,8 +1,10 @@
-# Omniauth::Wink::Password
+[![Gem Version](https://badge.fury.io/rb/omniauth-lifx.svg)](https://badge.fury.io/rb/omniauth-lifx)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/omniauth/wink/password`. To experiment with that code, run `bin/console` for an interactive prompt.
+# omniauth-wink-password
 
-TODO: Delete this and the text above, and describe your gem
+An OmniAuth strategy for Wink OAuth2 integration (using their android app client credentials!)
+
+*Note*: This strategy is pretty much 100% evil, it requests their email/password and logs in as them directly!
 
 ## Installation
 
@@ -16,13 +18,17 @@ And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install omniauth-wink-password
-
 ## Usage
 
-TODO: Write usage instructions here
+You could add the middleware to a Rails app in `config/initializers/omniauth.rb`:
+
+```ruby
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :wink_password
+end
+```
+
+The access_token, refresh_token, email and password used to log in are returned in the credentials hash.
 
 ## Development
 
@@ -32,10 +38,9 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/omniauth-wink-password. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/hfwang/omniauth-lifx. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-

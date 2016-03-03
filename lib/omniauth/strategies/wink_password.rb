@@ -10,8 +10,7 @@ module OmniAuth
 
       include OmniAuth::Strategy
 
-      args [:dummy]
-      option :dummy, nil
+      option :name, "wink_password"
 
       CLIENT = ::OAuth2::Client.new(
           'quirky_wink_android_app', 'e749124ad386a5a35c0ab554a4f2c045',
@@ -19,13 +18,6 @@ module OmniAuth
           :token_url => "/oauth2/token")
 
       attr_accessor :access_token
-
-      # option :client_options, {
-      #   :site => 'https://cloud.lifx.com',
-      #   :authorize_url => '/oauth/authorize',
-      #   :token_url => '/oauth/token'
-      # }
-      # option :scope, "remote_control:all"
 
       uid {
         raw_info["user_id"]
@@ -42,7 +34,7 @@ module OmniAuth
 
       credentials do
         hash = {"token" => access_token.token}
-        hash.merge!("refresh_token" => access_token.refresh_token) if access_token.expires? && access_token.refresh_token
+        hash.merge!("refresh_token" => access_token.refresh_token) if access_token.refresh_token
         hash.merge!("expires_at" => access_token.expires_at) if access_token.expires?
         hash.merge!("expires" => access_token.expires?,
                     "email" => access_token.params["email"],
