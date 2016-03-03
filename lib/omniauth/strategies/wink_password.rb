@@ -6,18 +6,16 @@ require 'net/http'
 
 module OmniAuth
   module Strategies
-    class WinkPassword
-
-      include OmniAuth::Strategy
-
+    class WinkPassword < OmniAuth::Strategies::OAuth2
       option :name, "wink_password"
 
-      CLIENT = ::OAuth2::Client.new(
-          'quirky_wink_android_app', 'e749124ad386a5a35c0ab554a4f2c045',
-          :site => 'https://api.wink.com',
-          :token_url => "/oauth2/token")
-
-      attr_accessor :access_token
+      option :provider_ignores_state, true
+      option :client_id, 'quirky_wink_android_app'
+      option :client_secret, 'e749124ad386a5a35c0ab554a4f2c045'
+      option :client_options, {
+        :site => 'https://api.wink.com',
+        :token_url => "/oauth2/token"
+      }
 
       uid {
         raw_info["user_id"]
@@ -30,6 +28,10 @@ module OmniAuth
           "first_name" => raw_info["first_name"],
           "last_name" => raw_info["last_name"]
         }
+      end
+
+      extra do
+        { "raw_info" => raw_info }
       end
 
       credentials do
@@ -50,18 +52,16 @@ module OmniAuth
         form.to_response
       end
 
-      def callback_phase
-        self.access_token = CLIENT.password.get_token(request.params["email"], request.params["password"])
-        self.access_token.params["email"] = request.params["email"]
-        self.access_token.params["password"] = request.params["password"]
-        super
-      rescue ::OAuth2::Error => e
-        fail!(:invalid_credentials, e)
-      rescue ::Timeout::Error, ::Errno::ETIMEDOUT => e
-        fail!(:timeout, e)
-      rescue ::SocketError => e
-        fail!(:failed_to_connect, e)
+      def build_password_access_token
+        token = client.password.get_token(
+            request.params["email"], request.params["password"],
+            token_params.to_hash(:symbolize_keys => true),
+            deep_symbolize(options.auth_token_params))
+        token.params["email"] = request.params["email"]
+        token.params["password"] = request.params["password"]
+        return token
       end
+      alias_method :build_access_token, :build_password_access_token
 
       def raw_info
         @raw_info ||= access_token.get("/users/me").parsed["data"]
